@@ -1,0 +1,34 @@
+@startuml
+actor User
+participant Browser
+participant WebApp
+database GoogleAPI
+
+User -> GoogleAPI: あらかじめアプリを作成しておく\n参照元HostのURL,リダイレクトURLを設定
+User /- GoogleAPI: クライアントID,シークレットを取得
+note over WebApp: GoogleStrategyに\nクライアントIDとシークレット\nリダイレクトURLを設定
+
+User -> Browser: WebAppにアクセス
+Browser -> WebApp: GET localhost:3000/google
+activate WebApp
+WebApp --> WebApp:
+Browser <-- WebApp: 302 Found\nリダイレクト https://accounts.google.com/o/oauth2/v2/auth\nresponse_type=code,リダイレクトURL,scope=email+profile\nクライアントID,リダイレクトURL\nservice=lso,o2v=2,flowName=GeneralOAuthFlow
+deactivate WebApp
+Browser --> GoogleAPI: GET https://accounts.google.com/o/oauth2/v2/auth
+Browser --/ Browser: 既にログインしてるから\nCookieとかでアカウント選択画面に\n直接リダイレクトされてるのかも
+Browser <-- GoogleAPI: 認証ダイアログ表示\nhttps://accounts.google.com/\no/oauth2/v2/auth/oauthchooseaccount
+User /- Browser: 「アカウントの選択」
+User -> Browser: アカウントを選択し\n認証する
+
+Browser -> GoogleAPI: GET /accounts.google.com/signin/oauth/consent
+Browser <-- GoogleAPI: 302 Found\nリダイレクト localhost:3000/google/redirect\ncode=XXX,scope=email+profile+XXX+openid,authuser=0,prompt=consent
+Browser -> WebApp: GET localhost:3000/google/redirect
+activate WebApp
+WebApp -> WebApp: 今回はGoogleのリソースは使用しないので、\ncodeが取得できたら認証OKとみなす。\n内部でログインユーザの確認ができたら\nユーザーのダッシュボードを表示
+WebApp --> GoogleAPI: Googleのリソースが必要なら、codeを使って取りに行く
+WebApp <-- GoogleAPI: Googleリソースからの情報を取得
+Browser <-- WebApp: 今回はログインしたユーザー情報を返す\n json{\n\tBrowser{\n\temail,firstName,lastName,\n\tpicture,accessToken\n\t}\n}\n本来はユーザー専用のメイン画面を返す
+deactivate WebApp
+User /- Browser: 「メイン画面」
+
+@enduml
