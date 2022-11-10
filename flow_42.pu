@@ -1,0 +1,27 @@
+@startuml
+actor User
+participant Browser
+participant WebApp
+database 42API
+
+User -> 42API: アプリ作成\n認証後にリダイレクトするURLを設定
+User /- 42API: クライアントID,シークレットを取得
+note over WebApp: クライアントIDと\nシークレットを.envから参照
+
+User -> Browser: アプリにアクセス
+Browser -> WebApp: GET localhost:3000/auth42
+Browser <-- WebApp: 302 Found\n42認証ダイアログへリダイレクトさせる\noauth/authorize\nクライアントID,リダイレクトURL\nresponse＿type=code
+Browser --> 42API: GET api.intra.42.fr/oauth/authorize
+Browser <-- 42API: 200（ここで詰まってる）\n42認証ダイアログ表示のはず
+
+note over Browser: 確認できたのはここまで
+
+User /-- Browser: 「認証しますか？」
+User -> Browser: 認証するを押下
+Browser -> 42API: 認証フロー
+Browser <-- 42API: リダイレクトURL+code
+Browser --> WebApp: GET localhost:3000/auth42/redirect
+
+WebApp --> 42API: POST oauth/token\nクライアントID,シークレット,\ncode,リダイレクトURL,state
+
+@enduml

@@ -6,7 +6,7 @@ OAuth認証のお試し実装
 * rootディレクトリに、.envを作成し、下記の変数を追加してください。
 `GOOGLE_CLIENT_ID={GoogleAPIクライアントID}
 GOOGLE_SECRET={GoogleAPIシークレット}
-FORTYTWO_CLIENT_ID={42APIクライアントID}
+FORTYTWO_CLIENT_ID={42クライアントID}
 FORTYTWO_SECRET={42APIシークレット}`
 
 * 下記コマンドを実行
