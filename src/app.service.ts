@@ -14,16 +14,16 @@ export class AppService {
   }
 }
 
-// @Injectable()
-// export class FtAppService {
-//   ftLogin(req) {
-//     if (!req.user) {
-//       return 'No user from 42';
-//     }
+@Injectable()
+export class FtAppService {
+  ftLogin(req) {
+    if (!req.user) {
+      return 'No user from 42';
+    }
 
-//     return {
-//       message: 'User information from 42',
-//       user: req.user,
-//     };
-//   }
-// }
+    return {
+      message: 'User information from 42',
+      user: req.user,
+    };
+  }
+}

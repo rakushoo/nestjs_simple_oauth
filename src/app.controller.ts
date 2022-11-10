@@ -1,7 +1,7 @@
-import { Controller, Get, Req, Redirect, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
-// import { FtAppService } from './app.service';
+import { FtAppService } from './app.service';
 import { FtOauthGuard } from './guards/ft-oauth.guard';
 
 @Controller('google')
@@ -21,7 +21,7 @@ export class AppController {
 
 @Controller('auth42')
 export class FtAppController {
-  // constructor(private readonly appService: FtAppService) {}
+  constructor(private readonly appService: FtAppService) {}
 
   @Get()
   @UseGuards(FtOauthGuard)
@@ -31,8 +31,8 @@ export class FtAppController {
 
   @Get('redirect')
   @UseGuards(FtOauthGuard)
-  @Redirect('/')
-  ftAuthCallback() {
-    return;
+  // @Redirect('/')
+  ftAuthCallback(@Req() req) {
+    return this.appService.ftLogin(req);
   }
 }

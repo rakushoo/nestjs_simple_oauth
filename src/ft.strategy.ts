@@ -11,7 +11,7 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
     super({
       clientID: process.env.FORTYTWO_CLIENT_ID,
       clientSecret: process.env.FORTYTWO_SECRET,
-      callbackURL: 'http://localhost:3000/auth42/redirect',
+      callbackURL: '/auth42/redirect',
       passReqToCallback: true,
     });
   }
@@ -24,7 +24,7 @@ export class FtStrategy extends PassportStrategy(Strategy, '42') {
     cb: VerifyCallback,
   ): Promise<any> {
     request.session.accessToken = accessToken;
-    console.log('accessToken', accessToken, 'refreshToken', refreshToken);
+    // console.log('accessToken', accessToken, 'refreshToken', refreshToken);
     // In this example, the user's 42 profile is supplied as the user
     // record.  In a production-quality application, the 42 profile should
     // be associated with a user record in the application's database, which
